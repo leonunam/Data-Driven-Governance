@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Universidad Veracruzana fuera de los rankings internacionales — Alejandro León</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f1117;
+    --bg2:       #13151c;
+    --bg3:       #161820;
+    --bg4:       #1c1e27;
+    --border:    #1e2130;
+    --border2:   #2a2a35;
+    --text:      #e8e6df;
+    --text2:     #a09e97;
+    --text3:     #666070;
+    --accent:    #3d9fd4;
+    --green:     #35c472;
+    --amber:     #f5a623;
+    --red:       #e85050;
+    --serif:     'Lora', Georgia, serif;
+    --mono:      'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 720px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── HEADER ── */
+  .article-header {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .article-rubric {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .article-rubric::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border2);
+  }
+  .article-title {
+    font-family: var(--serif);
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+    line-height: 1.22;
+    color: #f0ede6;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .article-byline {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .article-byline .author { color: var(--text2); }
+  .article-byline::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+
+  /* ── BODY TEXT ── */
+  .article-body { font-size: 17px; line-height: 1.78; color: var(--text); }
+
+  .article-body p { margin-bottom: 1.6em; }
+
+  .article-body a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(61,159,212,0.3);
+    transition: border-color 0.15s;
+  }
+  .article-body a:hover { border-bottom-color: var(--accent); }
+
+  /* ── DROP CAP ── */
+  .article-body .drop-cap::first-letter {
+    float: left;
+    font-size: 4.2em;
+    line-height: 0.82;
+    padding-right: 10px;
+    padding-top: 4px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: var(--serif);
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    margin: 2.4em 0;
+    padding: 20px 28px;
+    border-left: 3px solid var(--accent);
+    background: var(--bg4);
+    border-radius: 0 6px 6px 0;
+  }
+  .pull-quote p {
+    font-size: 18px;
+    font-style: italic;
+    color: #d0cdc6;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ── SECTION BREAK ── */
+  .section-break {
+    display: flex; align-items: center; gap: 16px;
+    margin: 3em 0;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+  .section-break::before, .section-break::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── FIGURE WRAPPER ── */
+  .figure-wrap {
+    margin: 2.4em -8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .figure-inner { padding: 28px 28px 0; }
+  .figure-label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .figure-caption {
+    font-size: 12.5px;
+    color: var(--text3);
+    font-family: var(--mono);
+    padding: 12px 28px 16px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── CHART (scatter) ── */
+  .chart-title  { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.35; margin-bottom: 3px; font-family: var(--serif); }
+  .chart-sub    { font-size: 12px; color: var(--text3); margin-bottom: 12px; font-family: var(--mono); }
+  .legend-row   { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-bottom: 10px; }
+  .legend-item  { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); font-family: var(--mono); }
+  .legend-dot   { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .chart-box    { position: relative; width: 100%; aspect-ratio: 1/1; max-height: 600px; }
+  #tooltip {
+    position: absolute;
+    background: #1c1e27;
+    border: 0.5px solid #3a3a4a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11.5px;
+    color: #ddd;
+    line-height: 1.6;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 230px;
+    z-index: 10;
+    white-space: nowrap;
+    font-family: var(--mono);
+  }
+  #tooltip .t-name  { font-weight: 600; font-size: 12.5px; color: #fff; margin-bottom: 3px; font-family: var(--serif); }
+  #tooltip .t-val   { color: #bbb; }
+  #tooltip .t-cat   { margin-top: 5px; font-size: 10.5px; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+
+  /* ── TABLE ── */
+  .tbl-title  { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.35; margin-bottom: 3px; font-family: var(--serif); }
+  .tbl-sub    { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-bottom: 14px; }
+  .controls   { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+  .filter-btn {
+    font-size: 10px; font-family: var(--mono);
+    padding: 4px 11px; border-radius: 20px;
+    border: 0.5px solid #2a2a35;
+    background: transparent; color: var(--text3);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #444; color: var(--text2); }
+  .filter-btn.active { background: rgba(61,159,212,0.08); border-color: var(--accent); color: var(--accent); }
+  .search-box {
+    margin-left: auto;
+    background: var(--bg3); border: 0.5px solid var(--border2);
+    border-radius: 5px; padding: 4px 11px;
+    color: #ccc; font-size: 10.5px; font-family: var(--mono);
+    width: 160px; outline: none;
+  }
+  .search-box::placeholder { color: #333; }
+  .search-box:focus { border-color: var(--accent); }
+  .row-count { font-size: 9.5px; color: var(--text3); font-family: var(--mono); margin-bottom: 6px; }
+  .tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 560px; }
+  thead tr { background: rgba(30,33,48,0.8); }
+  th {
+    padding: 10px 11px;
+    text-align: left; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); font-family: var(--mono);
+    font-weight: normal; white-space: nowrap;
+    border-bottom: 1px solid var(--border2);
+  }
+  th.r { text-align: right; } th.c { text-align: center; }
+  tbody tr { border-bottom: 0.5px solid rgba(255,255,255,0.04); transition: background 0.1s; }
+  tbody tr:nth-child(even) { background: rgba(19,21,28,0.6); }
+  tbody tr:hover { background: rgba(30,32,48,0.9); }
+  tbody tr.uv-row { background: rgba(26,21,8,0.8) !important; }
+  tbody tr.uv-row:hover { background: rgba(35,28,10,0.9) !important; }
+  td { padding: 9px 11px; color: #bbb; vertical-align: middle; font-family: var(--serif); }
+  td.r { text-align: right; font-family: var(--mono); }
+  td.c { text-align: center; }
+  tr.cat-eff td:first-child { box-shadow: inset 3px 0 0 var(--green); }
+  tr.cat-sub td:first-child { box-shadow: inset 3px 0 0 var(--amber); }
+  tr.cat-mod td:first-child { box-shadow: inset 3px 0 0 #3d5a6a; }
+  tr.cat-uv  td:first-child { box-shadow: inset 3px 0 0 var(--red); }
+  .uni-name { font-size: 12.5px; color: #d8d5ce; line-height: 1.3; }
+  .uni-name.uv { color: #f0c060; font-style: italic; }
+  .sigla {
+    display: inline-block; font-family: var(--mono);
+    font-size: 9.5px; font-weight: 500;
+    padding: 2px 6px; border-radius: 3px; letter-spacing: 0.04em;
+  }
+  .sigla.eff { color: var(--green); background: rgba(53,196,114,0.1); }
+  .sigla.sub { color: var(--amber); background: rgba(245,166,35,0.1); }
+  .sigla.mod { color: var(--accent); background: rgba(61,159,212,0.1); }
+  .sigla.uv  { color: var(--red);   background: rgba(232,80,80,0.1); }
+  .recursos-cell { position: relative; }
+  .res-bar-wrap { height: 2px; background: rgba(61,159,212,0.1); border-radius: 1px; margin-top: 3px; width: 100%; }
+  .res-bar { height: 2px; background: rgba(61,159,212,0.3); border-radius: 1px; }
+  .the-banda { font-family: var(--mono); font-size: 10.5px; }
+  .the-banda.notable { color: var(--green); }
+  .the-banda.regular { color: #777; }
+  .the-banda.none    { color: #333; }
+  .rq-val { font-family: var(--mono); font-size: 11.5px; font-weight: 500; }
+  .rq-val.high { color: var(--green); }
+  .rq-val.mid  { color: var(--accent); }
+  .rq-val.low  { color: #777; }
+  .rq-val.none { color: #333; }
+  .qs-banda { font-family: var(--mono); font-size: 10.5px; }
+  .qs-banda.has  { color: var(--accent); }
+  .qs-banda.none { color: #333; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: #5ab0e0; }
+  th.sort-asc::after  { content: ' ↑'; opacity: 0.6; }
+  th.sort-desc::after { content: ' ↓'; opacity: 0.6; }
+
+  /* ── TABLE LEGEND ── */
+  .tbl-legend {
+    display: flex; flex-wrap: wrap; gap: 5px 16px;
+    margin-top: 12px; padding-top: 10px;
+    border-top: 0.5px solid var(--border);
+  }
+  .tbl-legend-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--text3); font-family: var(--mono);
+  }
+  .tbl-legend-bar { width: 3px; height: 11px; border-radius: 1px; flex-shrink: 0; }
+
+  /* ── SOURCES ── */
+  .source-note {
+    font-size: 10px; color: var(--text3);
+    line-height: 1.7; font-family: var(--mono);
+  }
+  .source-note a { color: #4a7aaa; text-decoration: none; border-bottom: 1px solid rgba(74,122,170,0.3); }
+  .source-note a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .source-note strong { color: #555; font-weight: 500; }
+
+  /* ── FOOTER ── */
+  .article-footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .article-header { animation: fadeUp 0.55s ease both; }
+  .article-body   { animation: fadeUp 0.55s 0.1s ease both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="article-header">
+    <p class="article-rubric">Educación superior · Análisis</p>
+    <h1 class="article-title">La Universidad Veracruzana fuera de los rankings internacionales, a pesar de tener uno de los mayores presupuestos entre las universidades estatales</h1>
+    <p class="article-byline">
+      <span class="author">Por Alejandro León</span>
+    </p>
+  </header>
+
+  <!-- BODY -->
+  <div class="article-body">
+
+    <p class="drop-cap">Hace un par de semanas se publicó el <a href="https://www.topuniversities.com/world-university-rankings" target="_blank" rel="noopener">QS World University Rankings</a>. La Universidad Veracruzana (UV) no apareció clasificada. No es este el primer ranking internacional del que la UV queda fuera. También estuvo ausente del <a href="https://www.timeshighereducation.com/world-university-rankings/2026/world-ranking" target="_blank" rel="noopener">Times Higher Education World University Rankings (THE)</a>.</p>
+
+    <p>Si bien las virtudes y los vicios de los rankings son, con razón, objeto de debate, tanto QS como THE son ampliamente aceptados por comunidades académicas, universitarias e incluso por los empleadores como referentes globales de desempeño institucional. No son instrumentos perfectos, pero sí constituyen un lenguaje común para comparar universidades en el plano internacional.</p>
+
+    <p>El ranking Times Higher Education evalúa cinco dimensiones: docencia (29.5%), ambiente de investigación (29%), calidad de la investigación (30%), vinculación con la industria (4%) y proyección internacional (7.5%). Por su parte, el QS World University Rankings considera investigación (30%), empleabilidad (20%), experiencia de aprendizaje (10%), internacionalización (15%) y sustentabilidad (5%), con un peso particularmente alto en reputación académica.</p>
+
+    <p>Entre las universidades mexicanas que sí están clasificadas se encuentran instituciones públicas y privadas, tanto federales como estatales. Es precisamente en este último grupo, el de las universidades públicas estatales, donde la comparación resulta más pertinente para ubicar a la Universidad Veracruzana en su justo contexto.</p>
+
+    <p>Al revisar los datos del ranking Times Higher Education, se identifican al menos 16 universidades públicas estatales mexicanas con clasificación. Algunas de ellas se ubican en la banda 1201–1500 y otras en la banda 1501+. No se trata necesariamente de universidades con posiciones destacadas a nivel global, pero sí de instituciones que han alcanzado los umbrales de visibilidad, producción científica e impacto requeridos para ser consideradas dentro del sistema internacional de medición. En un preocupante contraste, la Universidad Veracruzana no aparece.</p>
+
+    <div class="pull-quote">
+      <p>La ausencia de la UV en los rankings no basta para concluir que tenga menor calidad académica que las universidades clasificadas. Pero sí es suficiente para señalar algo crucial: la UV no está generando, o no está logrando impactar o reportar adecuadamente, su actividad académica en indicadores reconocibles dentro de los sistemas internacionales de evaluación.</p>
+    </div>
+
+    <p>La situación adquiere mayor gravedad al considerar la variable de recursos disponibles. De acuerdo con <a href="https://dgesui.ses.sep.gob.mx/sep.subsidioentransparencia.mx/2025/subsidio-ordinario" target="_blank" rel="noopener">datos oficiales</a> de la Subsecretaría de Educación Superior, el subsidio público (federal + estatal) para 2025 de la Universidad Veracruzana fue de 6,906.9 millones de pesos, lo que la ubica en el quinto lugar nacional entre las universidades públicas estatales consideradas en este análisis. No se trata, por tanto, de una institución marginal en términos presupuestales; por el contrario, la UV es una de las universidades estatales con más recursos.</p>
+
+    <p>Para situar esta relación de manera más precisa, la siguiente figura muestra la relación entre recursos disponibles y calidad de la investigación, medida a través del indicador correspondiente del ranking THE.</p>
+
+    <!-- FIGURA: SCATTER PLOT -->
+    <div class="figure-wrap">
+      <div class="figure-inner">
+        <p class="figure-label">Figura 1</p>
+        <p class="chart-title">Universidades públicas estatales mexicanas</p>
+        <p class="chart-sub">Recursos disponibles e impacto en investigación · THE WUR 2026</p>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-dot" style="background:#3d9fd4"></span>Desempeño moderado</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#35c472"></span>Alta eficiencia</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#f5a623"></span>Suboptimización</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#e85050"></span>UV (sin clasificación)</span>
+        </div>
+        <div class="chart-box">
+          <canvas id="bc"></canvas>
+          <div id="tooltip"></div>
+        </div>
+      </div>
+      <div class="figure-caption source-note">
+        <strong>Fuentes</strong> ·
+        <strong>Calidad de la investigación:</strong> Times Higher Education (THE) <em>World University Rankings 2026</em>, indicador <em>Research Quality</em>.
+        Metodología: <a href="https://www.timeshighereducation.com/world-university-rankings/2026/world-ranking" target="_blank" rel="noopener">World University Rankings 2026: methodology | THE</a> ·
+        <strong>Recursos:</strong> Subsidio federal + estatal 2025.
+        <a href="https://dgesui.ses.sep.gob.mx/sep.subsidioentransparencia.mx/2025/subsidio-ordinario" target="_blank" rel="noopener">Subsecretaría de Educación Superior | Subsidio</a> ·
+        <strong>Dataset:</strong> <a href="https://osf.io/3bvr9/files/qfdcb" target="_blank" rel="noopener">Descargar CSV</a> ·
+        Ejes en escala logarítmica. Cuadrantes definidos con la mediana del sistema (recursos: $3,569.9 M; RQ: 13.5). Tamaño del punto proporcional (log) a los recursos. Posición vertical de UV referencial.
+      </div>
+    </div>
+
+    <p>Ciertamente, lo que se observa no es una relación lineal entre recursos e impacto. Las universidades con los mayores presupuestos, como la Universidad de Guadalajara o la Universidad Autónoma de Nuevo León, no presentan los niveles más altos en calidad de la investigación. Por el contrario, instituciones como la Universidad Autónoma de Sinaloa y la Universidad de Colima, con presupuestos comparables e incluso menores al de la UV, alcanzan valores significativamente altos en este indicador. En cualquier caso, destaca que la UV, teniendo el quinto presupuesto más grande, ni siquiera está clasificada en el ranking. Huelga decir que justamente el área de investigación, más que central en los sistemas de evaluación referidos, ha sido recientemente una de las más golpeadas en la UV, por ejemplo, con ajustes que precarizan estructuralmente las condiciones para dedicarse de tiempo completo a la investigación (véase mi artículo sobre <a href="https://childish-pumpkin-ac9.notion.site/Desempe-o-acad-mico-funciones-sustantivas-y-distorsiones-de-los-programas-de-est-mulos-una-discusi-330ed99a12fe80028da1c0a4df9e4e79" target="_blank" rel="noopener">las funciones sustantivas y las distorsiones de los programas de estímulos</a>).</p>
+
+    <div class="section-break">§</div>
+
+    <p>A la luz de la evidencia, el problema que se revela es que no se trata únicamente de la disponibilidad de recursos, que casi siempre serán insuficientes, sino de su conversión en resultados académicos con impacto reconocible en el plano internacional. Para efectos de este análisis, es justo decir que la Universidad Veracruzana no se ubica simplemente en una posición rezagada dentro de estos sistemas de evaluación, sino que está fuera de ellos. Mientras otras universidades públicas estatales, con recursos comparables o notablemente inferiores —en algunos casos casi tres veces menores, como la Universidad de Colima— logran un nivel mínimo de visibilidad en rankings como THE o QS, la UV ni siquiera aparece.</p>
+
+    <p>El caso del ranking QS ofrece otra dimensión del problema. A diferencia de THE, que privilegia indicadores bibliométricos, QS incorpora de manera más explícita la reputación académica y la percepción de empleadores. La ausencia de la Universidad Veracruzana en este ranking sugiere que la problemática no se limita al impacto científico objetivamente medido, sino que se extiende al posicionamiento institucional y a su visibilidad en redes académicas y profesionales.</p>
+
+    <p>En conjunto, ambos rankings apuntan hacia un mismo diagnóstico: la Universidad Veracruzana no está integrada al sistema internacional de referencia, ni en términos de impacto ni en términos de percepción. Este señalamiento no debe tomarse como una descalificación simplista, sino como una crítica constructiva y una invitación a revisar con rigor los mecanismos mediante los cuales la institución organiza, incentiva y proyecta su actividad académica. La evidencia disponible muestra que existen universidades públicas estatales en México que, con recursos similares y a veces notablemente menores, han logrado posicionarse dentro de estos sistemas. Se podrá cuestionar la idoneidad de los rankings, pues son imperfectos, pero la ausencia sistemática en ellos es un hecho que no puede ni debe ser ignorado y que, en aras de la transparencia y el ejercicio eficaz de los recursos, exige una explicación de quienes están al frente de la administración universitaria.</p>
+
+    <!-- TABLA -->
+    <div class="figure-wrap">
+      <div class="figure-inner">
+        <p class="figure-label">Tabla 1</p>
+        <p class="tbl-title">Recursos, desempeño en investigación y posicionamiento</p>
+        <p class="tbl-sub">THE WUR 2026 · QS WUR 2025 · Subsidio federal + estatal 2025</p>
+        <div class="controls">
+          <button class="filter-btn active" data-filter="all">Todas</button>
+          <button class="filter-btn" data-filter="eff">Alta eficiencia (THE)</button>
+          <button class="filter-btn" data-filter="sub">Suboptimización (THE)</button>
+          <button class="filter-btn" data-filter="mod">Desempeño moderado (THE)</button>
+          <button class="filter-btn" data-filter="qs">Clasifica en QS</button>
+          <input class="search-box" id="search" type="text" placeholder="Buscar…">
+        </div>
+        <p class="row-count" id="rowcount">16 universidades</p>
+        <div class="tbl-scroll">
+          <table id="tbl">
+            <thead>
+              <tr>
+                <th>Universidad</th>
+                <th class="c">Siglas</th>
+                <th class="r sortable" data-col="recursos">Recursos 2025<br><span style="color:#333;font-size:8px">M MXN</span></th>
+                <th class="c">THE<br><span style="color:#333;font-size:8px">banda</span></th>
+                <th class="c sortable" data-col="rq">Research<br><span style="color:#333;font-size:8px">Quality</span></th>
+                <th class="c">QS<br><span style="color:#333;font-size:8px">banda</span></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="tbl-legend">
+          <span class="tbl-legend-item"><span class="tbl-legend-bar" style="background:#35c472"></span>Alta eficiencia (THE)</span>
+          <span class="tbl-legend-item"><span class="tbl-legend-bar" style="background:#f5a623"></span>Suboptimización (THE)</span>
+          <span class="tbl-legend-item"><span class="tbl-legend-bar" style="background:#3d5a6a"></span>Desempeño moderado (THE)</span>
+          <span class="tbl-legend-item"><span class="tbl-legend-bar" style="background:#e85050"></span>UV — sin clasificación</span>
+        </div>
+      </div>
+      <div class="figure-caption source-note">
+        <strong>Fuentes</strong> ·
+        <strong>THE:</strong> <a href="https://www.timeshighereducation.com/world-university-rankings/2026/world-ranking" target="_blank" rel="noopener">World University Rankings 2026: methodology | Times Higher Education (THE)</a> ·
+        <strong>QS:</strong> <a href="https://www.topuniversities.com/world-university-rankings" target="_blank" rel="noopener">QS World University Rankings 2025 | Top Universities</a> ·
+        <strong>Recursos:</strong> <a href="https://dgesui.ses.sep.gob.mx/sep.subsidioentransparencia.mx/2025/subsidio-ordinario" target="_blank" rel="noopener">Subsecretaría de Educación Superior | Subsidio</a> ·
+        <strong>Dataset:</strong> <a href="https://osf.io/3bvr9/files/6bnq8" target="_blank" rel="noopener">Descargar CSV</a>
+      </div>
+    </div>
+
+  </div><!-- /article-body -->
+
+  <footer class="article-footer">
+    <span>Alejandro León</span>
+    <span style="color:#2a2a35">·</span>
+    <span>Educación superior · Análisis</span>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+/* ═══════════════════════════════════════════
+   SCATTER PLOT
+═══════════════════════════════════════════ */
+const unis = [
+  {name:'Universidad Autónoma de Sinaloa',             label:'UAS',    x:7807.1,  y:55.8, cat:'eff',   lx: 1, ly: 0},
+  {name:'Universidad de Colima',                        label:'UCOL',   x:2518.7,  y:54.3, cat:'eff',   lx: 1, ly: 0},
+  {name:'Universidad de Guadalajara',                   label:'UdeG',   x:16155.8, y:17.2, cat:'sub',   lx:-1, ly: 0},
+  {name:'Univ. Autónoma de Nuevo León',                 label:'UANL',   x:9830.0,  y:17.0, cat:'sub',   lx: 0, ly:-1},
+  {name:'Benemérita Univ. Autónoma de Puebla',          label:'BUAP',   x:7993.4,  y:13.5, cat:'sub',   lx: 1, ly: 0},
+  {name:'Univ. Autónoma del Estado de México',          label:'UAEMex', x:5047.6,  y:7.9,  cat:'sub',   lx: 0, ly: 1},
+  {name:'Univ. Michoacana de San Nicolás de Hidalgo',   label:'UMSNH',  x:4452.0,  y:13.5, cat:'other', lx:-1, ly: 0},
+  {name:'Univ. Autónoma de Baja California',            label:'UABC',   x:4332.7,  y:14.4, cat:'other', lx: 0, ly:-1},
+  {name:'Universidad de Guanajuato',                    label:'UGTO',   x:3681.2,  y:14.6, cat:'other', lx: 1, ly: 0},
+  {name:'Univ. Autónoma de Coahuila',                   label:'UAdeC',  x:3595.5,  y:12.0, cat:'other', lx: 0, ly: 1},
+  {name:'Univ. Autónoma de Guerrero',                   label:'UAGro',  x:3569.9,  y:10.9, cat:'other', lx:-1, ly: 0},
+  {name:'Univ. Autónoma del Estado de Hidalgo',         label:'UAEH',   x:3141.9,  y:10.0, cat:'other', lx: 0, ly: 1},
+  {name:'Univ. Autónoma de Querétaro',                  label:'UAQ',    x:3021.2,  y:19.4, cat:'eff',   lx: 0, ly:-1},
+  {name:'Universidad de Sonora',                        label:'UNISON', x:2928.8,  y:13.8, cat:'eff',   lx: 0, ly:-1},
+  {name:'Univ. Autónoma de Yucatán',                    label:'UADY',   x:2436.7,  y:11.5, cat:'other', lx:-1, ly: 0},
+  {name:'Universidad Veracruzana',                      label:'UV',     x:6906.9,  y:5.6,  cat:'uv',    lx: 1, ly: 0},
+];
+const catMeta = {
+  other:{ color:'#3d9fd4', label:'Desempeño moderado' },
+  eff:  { color:'#35c472', label:'Alta eficiencia' },
+  sub:  { color:'#f5a623', label:'Suboptimización' },
+  uv:   { color:'#e85050', label:'UV (sin clasificación)' },
+};
+const logN=(v,mn,mx)=>(Math.log10(v)-Math.log10(mn))/(Math.log10(mx)-Math.log10(mn));
+const xVals=unis.map(u=>u.x),minX=Math.min(...xVals),maxX=Math.max(...xVals);
+const scDatasets=['other','eff','sub','uv'].map(cat=>({
+  type:'bubble',label:cat,
+  data:unis.filter(u=>u.cat===cat).map(u=>({
+    x:Math.log10(u.x),y:Math.log10(u.y),
+    label:u.label,fullName:u.name,lx:u.lx,ly:u.ly,
+    cat:u.cat,xReal:u.x,yReal:u.y,
+    r:5+logN(u.x,minX,maxX)*13
+  })),
+  backgroundColor:catMeta[cat].color+'bb',
+  borderColor:catMeta[cat].color,
+  borderWidth:1.2,order:1
+}));
+const xMed=Math.log10(3569.9),yMed=Math.log10(13.5);
+const xTV=[2500,5000,10000,16000],yTV=[10,20,50];
+const quadCol='rgba(255,255,255,0.2)',refCol='rgba(255,255,255,0.05)';
+const lCol='rgba(170,168,200,0.38)',tCol='#eee',aCol='#777';
+
+Chart.register({id:'quad',afterDraw(c){
+  const{ctx,chartArea:{left,right,top,bottom},scales}=c;
+  const xp=scales.x.getPixelForValue(xMed),yp=scales.y.getPixelForValue(yMed);
+  ctx.save();ctx.setLineDash([5,5]);ctx.strokeStyle=quadCol;ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(xp,top);ctx.lineTo(xp,bottom);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(left,yp);ctx.lineTo(right,yp);ctx.stroke();
+  ctx.restore();
+  ctx.save();ctx.setLineDash([2,5]);ctx.strokeStyle=refCol;ctx.lineWidth=0.5;
+  xTV.forEach(v=>{const p=scales.x.getPixelForValue(Math.log10(v));ctx.beginPath();ctx.moveTo(p,top);ctx.lineTo(p,bottom);ctx.stroke();});
+  yTV.forEach(v=>{const p=scales.y.getPixelForValue(Math.log10(v));ctx.beginPath();ctx.moveTo(left,p);ctx.lineTo(right,p);ctx.stroke();});
+  ctx.restore();
+  const ql=[
+    {t:'Alta eficiencia',            a:'left', tx:left+6,  ty:top+13},
+    {t:'Alto recurso / alto impacto',a:'right',tx:right-6, ty:top+13},
+    {t:'Suboptimización',            a:'right',tx:right-6, ty:bottom-5},
+    {t:'Bajo recurso / bajo impacto',a:'left', tx:left+6,  ty:bottom-5},
+  ];
+  ctx.save();ctx.font='400 9px sans-serif';ctx.fillStyle=lCol;
+  ql.forEach(q=>{ctx.textAlign=q.a;ctx.fillText(q.t,q.tx,q.ty);});
+  ctx.restore();
+}});
+Chart.register({id:'ulabels',afterDraw(c){
+  const{ctx,scales}=c;
+  c.data.datasets.forEach(ds=>{
+    if(!ds.data||!ds.data[0]||!ds.data[0].label)return;
+    ds.data.forEach(pt=>{
+      const xp=scales.x.getPixelForValue(pt.x),yp=scales.y.getPixelForValue(pt.y),off=pt.r+4;
+      ctx.save();ctx.font='600 9px sans-serif';ctx.fillStyle=tCol;
+      ctx.textAlign=pt.lx<0?'right':pt.lx>0?'left':'center';
+      ctx.textBaseline=pt.ly<0?'bottom':pt.ly>0?'top':'middle';
+      ctx.fillText(pt.label,xp+pt.lx*off,yp+pt.ly*(off+2));
+      ctx.restore();
+    });
+  });
+}});
+const chartEl=document.getElementById('bc');
+const tip=document.getElementById('tooltip');
+new Chart(chartEl,{
+  type:'scatter',data:{datasets:scDatasets},
+  options:{
+    responsive:true,maintainAspectRatio:true,
+    layout:{padding:{top:20,right:28,bottom:8,left:6}},
+    animation:{duration:0},
+    plugins:{legend:{display:false},tooltip:{enabled:false}},
+    scales:{
+      x:{type:'linear',min:Math.log10(2100),max:Math.log10(19000),
+        grid:{display:false},border:{color:'#1e2130'},
+        afterBuildTicks(a){a.ticks=xTV.map(v=>({value:Math.log10(v)}));},
+        ticks:{color:aCol,font:{size:9.5},maxRotation:0,
+          callback(v){const r=Math.pow(10,v);const n=xTV.reduce((a,b)=>Math.abs(b-r)<Math.abs(a-r)?b:a);
+            if(Math.abs(r-n)/n<0.01)return n===2500?'2.5k':(n/1000)+'k';return '';}},
+        title:{display:true,text:'Recursos disponibles (millones de pesos)',color:aCol,font:{size:10}}},
+      y:{type:'linear',min:Math.log10(4.8),max:Math.log10(72),
+        grid:{display:false},border:{color:'#1e2130'},
+        afterBuildTicks(a){a.ticks=yTV.map(v=>({value:Math.log10(v)}));},
+        ticks:{color:aCol,font:{size:9.5},
+          callback(v){const r=Math.pow(10,v);const n=yTV.reduce((a,b)=>Math.abs(b-r)<Math.abs(a-r)?b:a);
+            if(Math.abs(r-n)/n<0.02)return n;return '';}},
+        title:{display:true,text:'Calidad de la investigación (de acuerdo con el THE)',color:aCol,font:{size:10}}}
+    }
+  }
+});
+chartEl.addEventListener('mousemove',e=>{
+  const rect=chartEl.getBoundingClientRect();
+  const chart=Chart.getChart(chartEl);
+  const pts=chart.getElementsAtEventForMode(e,'nearest',{intersect:true},false);
+  if(!pts.length){tip.style.opacity=0;return;}
+  const pt=chart.data.datasets[pts[0].datasetIndex].data[pts[0].index];
+  const m=catMeta[pt.cat];
+  tip.innerHTML=`<div class="t-name">${pt.fullName}</div>
+    <div class="t-val">Recursos: <strong>$${Math.round(pt.xReal).toLocaleString('es-MX')} M</strong></div>
+    <div class="t-val">Research Quality (THE): <strong>${pt.label==='UV'?'—':pt.yReal.toFixed(1)}</strong></div>
+    <span class="t-cat" style="background:${m.color}22;color:${m.color}">${m.label}</span>`;
+  let lx=e.clientX-rect.left+14,ty=e.clientY-rect.top-10;
+  if(lx+240>rect.width)lx=e.clientX-rect.left-240;
+  tip.style.left=lx+'px';tip.style.top=ty+'px';tip.style.opacity=1;
+});
+chartEl.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+chartEl.addEventListener('touchstart',e=>{
+  const t=e.touches[0];const rect=chartEl.getBoundingClientRect();
+  const chart=Chart.getChart(chartEl);
+  const pts=chart.getElementsAtEventForMode({clientX:t.clientX,clientY:t.clientY},'nearest',{intersect:false},false);
+  if(!pts.length)return;
+  const pt=chart.data.datasets[pts[0].datasetIndex].data[pts[0].index];
+  const m=catMeta[pt.cat];
+  tip.innerHTML=`<div class="t-name">${pt.fullName}</div>
+    <div class="t-val">Recursos: <strong>$${Math.round(pt.xReal).toLocaleString('es-MX')} M</strong></div>
+    <div class="t-val">Research Quality (THE): <strong>${pt.label==='UV'?'—':pt.yReal.toFixed(1)}</strong></div>
+    <span class="t-cat" style="background:${m.color}22;color:${m.color}">${m.label}</span>`;
+  tip.style.left=(t.clientX-rect.left+14)+'px';tip.style.top=(t.clientY-rect.top-10)+'px';
+  tip.style.opacity=1;setTimeout(()=>{tip.style.opacity=0;},3000);
+},{passive:true});
+
+/* ═══════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════ */
+const tdata=[
+  {name:"Universidad de Guadalajara",                    sigla:"UdeG",   cat:"sub",recursos:16155.8,the_banda:"1501+",    rq:17.2,qs:"1001–1200"},
+  {name:"Univ. Autónoma de Nuevo León",                  sigla:"UANL",   cat:"sub",recursos:9830.0, the_banda:"1501+",    rq:17.0,qs:"1201–1400"},
+  {name:"Benemérita Univ. Autónoma de Puebla",           sigla:"BUAP",   cat:"sub",recursos:7993.4, the_banda:"1501+",    rq:13.5,qs:"1201–1400"},
+  {name:"Universidad Autónoma de Sinaloa",               sigla:"UAS",    cat:"eff",recursos:7807.1, the_banda:"1201–1500",rq:55.8,qs:null},
+  {name:"Universidad Veracruzana",                       sigla:"UV",     cat:"uv", recursos:6906.9, the_banda:null,       rq:null,qs:null},
+  {name:"Univ. Autónoma del Estado de México",           sigla:"UAEMex", cat:"sub",recursos:5047.6, the_banda:"1501+",    rq:7.9, qs:"1201–1400"},
+  {name:"Univ. Michoacana de San Nicolás de Hidalgo",    sigla:"UMSNH",  cat:"mod",recursos:4452.0, the_banda:"1501+",    rq:13.5,qs:null},
+  {name:"Univ. Autónoma de Baja California",             sigla:"UABC",   cat:"mod",recursos:4332.7, the_banda:"1501+",    rq:14.4,qs:"1401+"},
+  {name:"Universidad de Guanajuato",                     sigla:"UGTO",   cat:"mod",recursos:3681.2, the_banda:"1501+",    rq:14.6,qs:"1401+"},
+  {name:"Universidad Autónoma de Coahuila",              sigla:"UAdeC",  cat:"mod",recursos:3595.5, the_banda:"1501+",    rq:12.0,qs:null},
+  {name:"Universidad Autónoma de Guerrero",              sigla:"UAGro",  cat:"mod",recursos:3569.9, the_banda:"1501+",    rq:10.9,qs:null},
+  {name:"Univ. Autónoma del Estado de Hidalgo",          sigla:"UAEH",   cat:"mod",recursos:3141.9, the_banda:"1501+",    rq:10.0,qs:"1201–1400"},
+  {name:"Universidad Autónoma de Querétaro",             sigla:"UAQ",    cat:"eff",recursos:3021.2, the_banda:"1501+",    rq:19.4,qs:null},
+  {name:"Universidad de Sonora",                         sigla:"UNISON", cat:"eff",recursos:2928.8, the_banda:"1501+",    rq:13.8,qs:null},
+  {name:"Universidad de Colima",                         sigla:"UCOL",   cat:"eff",recursos:2518.7, the_banda:"1201–1500",rq:54.3,qs:null},
+  {name:"Univ. Autónoma de Yucatán",                     sigla:"UADY",   cat:"mod",recursos:2436.7, the_banda:"1501+",    rq:11.5,qs:null},
+];
+const maxR2=Math.max(...tdata.map(d=>d.recursos));
+let cf='all',cs={col:null,dir:1};
+function rqCls(r){if(r===null)return'none';if(r>=50)return'high';if(r>=14)return'mid';return'low';}
+function render(rows){
+  const tb=document.getElementById('tbody');tb.innerHTML='';
+  rows.forEach(d=>{
+    const tr=document.createElement('tr');
+    tr.className=`cat-${d.cat}${d.cat==='uv'?' uv-row':''}`;
+    const bw=Math.round((d.recursos/maxR2)*100);
+    const tbc=d.the_banda==='1201–1500'?'notable':d.the_banda?'regular':'none';
+    tr.innerHTML=`
+      <td><span class="uni-name${d.cat==='uv'?' uv':''}">${d.name}</span></td>
+      <td class="c"><span class="sigla ${d.cat}">${d.sigla}</span></td>
+      <td class="r recursos-cell">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11.5px">${d.recursos.toLocaleString('es-MX',{minimumFractionDigits:1,maximumFractionDigits:1})}</span>
+        <div class="res-bar-wrap"><div class="res-bar" style="width:${bw}%"></div></div>
+      </td>
+      <td class="c"><span class="the-banda ${tbc}">${d.the_banda||'—'}</span></td>
+      <td class="c"><span class="rq-val ${rqCls(d.rq)}">${d.rq!==null?d.rq.toFixed(1):'—'}</span></td>
+      <td class="c"><span class="qs-banda ${d.qs?'has':'none'}">${d.qs||'—'}</span></td>`;
+    document.getElementById('tbody').appendChild(tr);
+  });
+  document.getElementById('rowcount').textContent=`${rows.length} universidad${rows.length!==1?'es':''}`;
+}
+function refresh(){
+  let rows=[...tdata];
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  if(cf==='eff')rows=rows.filter(d=>d.cat==='eff');
+  else if(cf==='sub')rows=rows.filter(d=>d.cat==='sub');
+  else if(cf==='mod')rows=rows.filter(d=>d.cat==='mod');
+  else if(cf==='qs')rows=rows.filter(d=>d.qs);
+  if(q)rows=rows.filter(d=>d.name.toLowerCase().includes(q)||d.sigla.toLowerCase().includes(q));
+  if(cs.col==='recursos')rows.sort((a,b)=>(a.recursos-b.recursos)*cs.dir);
+  else if(cs.col==='rq')rows.sort((a,b)=>((a.rq||0)-(b.rq||0))*cs.dir);
+  render(rows);
+}
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');cf=btn.dataset.filter;refresh();
+  });
+});
+document.getElementById('search').addEventListener('input',refresh);
+document.querySelectorAll('th.sortable').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const col=th.dataset.col;
+    if(cs.col===col){cs.dir*=-1;th.className=th.className.replace(/sort-(asc|desc)/,'')+(cs.dir===1?' sort-asc':' sort-desc');}
+    else{document.querySelectorAll('th.sortable').forEach(t=>t.classList.remove('sort-asc','sort-desc'));cs={col,dir:-1};th.classList.add('sort-desc');}
+    refresh();
+  });
+});
+render(tdata);
+</script>
+</body>
+</html>
